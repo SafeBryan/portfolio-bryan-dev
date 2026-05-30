@@ -1,12 +1,17 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { LanguageGateComponent } from './features/language-gate/language-gate.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [LanguageGateComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('portfolio-bryan-dev');
+  selectedLanguage = signal<string | null>(null);
+
+  onLanguageSelected(language: string): void {
+    this.selectedLanguage.set(language);
+    console.log('Selected language:', language);
+  }
 }

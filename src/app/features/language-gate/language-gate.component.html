@@ -1,0 +1,54 @@
+<section
+  class="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#020617] px-5 py-10 text-white"
+>
+  <div
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.16),transparent_35%),radial-gradient(circle_at_bottom,rgba(15,23,42,0.95),#020617_65%)]"
+  ></div>
+
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] [background-size:64px_64px]"
+  ></div>
+
+  <div
+    class="pointer-events-none absolute left-0 right-0 top-1/2 h-px bg-cyan-300/20 shadow-[0_0_40px_rgba(34,211,238,0.55)]"
+  ></div>
+
+  <div #gateContent class="relative z-10 w-full max-w-3xl text-center">
+    <div class="mb-10">
+      <p class="font-mono text-xs uppercase tracking-[0.5em] text-cyan-200/70">
+        Portfolio Interface
+      </p>
+
+      <h1 class="mt-5 text-5xl font-black tracking-wide text-white sm:text-7xl">Bryan Dev</h1>
+
+      <p class="mx-auto mt-5 max-w-xl text-base leading-7 text-slate-400 sm:text-lg">
+        Select your interface language to initialize the portfolio system.
+      </p>
+    </div>
+
+    <div class="mx-auto grid max-w-xl gap-4">
+      <app-language-card
+        code="ES"
+        title="Español"
+        subtitle="Entrar al sistema en español"
+        symbol="🇪🇸"
+        (selected)="selectLanguage($event)"
+      />
+
+      <app-language-card
+        code="EN"
+        title="English"
+        subtitle="Enter the system in English"
+        symbol="🇬🇧"
+        (selected)="selectLanguage($event)"
+      />
+    </div>
+
+    <div
+      class="mt-10 flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.28em] text-slate-500"
+    >
+      <span class="h-2 w-2 animate-pulse rounded-full bg-cyan-300"></span>
+      <span>Status: waiting for input</span>
+    </div>
+  </div>
+</section>
