@@ -90,27 +90,7 @@
         }
 
         @case ('backend') {
-          <section class="rounded-[32px] border border-emerald-300/15 bg-black/55 p-6 font-mono">
-            <p class="text-xs uppercase tracking-[0.35em] text-emerald-300/70">
-              API Runtime Console
-            </p>
-
-            <div class="mt-6 space-y-3 text-sm">
-              <p class="text-slate-400">
-                <span class="text-emerald-300">GET</span> /api/profile/bryan
-              </p>
-              <p class="text-slate-400">
-                <span class="text-cyan-300">POST</span> /api/projects/filter
-              </p>
-              <p class="text-slate-400">
-                <span class="text-amber-300">SERVICE</span> PortfolioExperienceService.validate()
-              </p>
-              <p class="text-slate-400">
-                <span class="text-violet-300">REPOSITORY</span> DeveloperStackRepository.findAll()
-              </p>
-              <p class="text-emerald-300">response.status = 200 // Engine ready</p>
-            </div>
-          </section>
+          <app-backend-engine-module [language]="language" />
         }
 
         @case ('database') {
