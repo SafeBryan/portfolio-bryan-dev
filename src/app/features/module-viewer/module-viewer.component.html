@@ -58,35 +58,7 @@
         }
 
         @case ('frontend') {
-          <section class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-            <div class="rounded-[32px] border border-sky-300/15 bg-sky-300/[0.045] p-6">
-              <p class="font-mono text-xs uppercase tracking-[0.3em] text-sky-200/70">
-                UI Component Lab
-              </p>
-
-              <h2 class="mt-5 text-4xl font-black text-white">Frontend workspace</h2>
-
-              <p class="mt-4 text-slate-400">
-                {{ labels().placeholder }}
-              </p>
-            </div>
-
-            <div class="grid gap-4">
-              <div class="rounded-[24px] border border-white/10 bg-white/[0.05] p-5">
-                <div class="h-3 w-28 rounded-full bg-sky-300/30"></div>
-                <div class="mt-5 grid gap-3 sm:grid-cols-3">
-                  <div class="h-24 rounded-2xl border border-white/10 bg-black/30"></div>
-                  <div class="h-24 rounded-2xl border border-white/10 bg-black/30"></div>
-                  <div class="h-24 rounded-2xl border border-white/10 bg-black/30"></div>
-                </div>
-              </div>
-
-              <div class="rounded-[24px] border border-white/10 bg-black/35 p-5">
-                <div class="h-10 rounded-2xl border border-sky-300/20 bg-sky-300/[0.06]"></div>
-                <div class="mt-4 h-32 rounded-2xl border border-white/10 bg-white/[0.035]"></div>
-              </div>
-            </div>
-          </section>
+          <app-frontend-lab-module [language]="language" />
         }
 
         @case ('backend') {
