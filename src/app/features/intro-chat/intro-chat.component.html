@@ -1,0 +1,81 @@
+<section
+  class="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#020617] px-5 py-10 text-white"
+>
+  <div
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.98),#020617_66%)]"
+  ></div>
+
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] [background-size:56px_56px]"
+  ></div>
+
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-cyan-300/10 to-transparent"
+  ></div>
+
+  <div
+    #chatPanel
+    class="relative z-10 w-full max-w-4xl overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.045] shadow-[0_28px_90px_rgba(0,0,0,0.55)] backdrop-blur-2xl"
+  >
+    <header
+      class="flex flex-col gap-4 border-b border-white/10 bg-black/25 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+    >
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.35em] text-cyan-200/70">
+          Portfolio Assistant
+        </p>
+
+        <h1 class="mt-2 text-2xl font-semibold text-white sm:text-3xl">Bryan Dev System</h1>
+      </div>
+
+      <button
+        type="button"
+        (click)="changeLanguage()"
+        class="w-fit rounded-full border border-white/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-slate-300 transition hover:border-cyan-300/50 hover:text-cyan-100"
+      >
+        {{ content().changeLanguage }}
+      </button>
+    </header>
+
+    <div class="space-y-6 px-5 py-7 sm:px-8 sm:py-9">
+      <div
+        class="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-slate-400"
+      >
+        <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-300"></span>
+        <span>{{ content().status }}</span>
+      </div>
+
+      <div class="rounded-[24px] border border-cyan-300/15 bg-cyan-300/[0.035] p-5">
+        <p class="font-mono text-xs uppercase tracking-[0.25em] text-cyan-200/70">System</p>
+
+        <p class="mt-3 font-mono text-sm text-cyan-50">
+          {{ content().system }}
+        </p>
+      </div>
+
+      <div class="rounded-[24px] border border-white/10 bg-black/25 p-5">
+        <p class="font-mono text-xs uppercase tracking-[0.25em] text-slate-500">
+          Portfolio Assistant
+        </p>
+
+        <p class="mt-4 text-xl font-medium leading-8 text-white sm:text-2xl">
+          {{ content().assistant }}
+        </p>
+
+        <p class="mt-2 text-base text-slate-400">
+          {{ content().question }}
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3 pt-2">
+        @for (option of content().options; track option.value) {
+          <app-chat-option
+            [label]="option.label"
+            [value]="option.value"
+            (optionSelected)="selectOption($event)"
+          />
+        }
+      </div>
+    </div>
+  </div>
+</section>

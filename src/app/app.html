@@ -1,17 +1,9 @@
 @if (!selectedLanguage()) {
   <app-language-gate (languageSelected)="onLanguageSelected($event)" />
 } @else {
-  <main class="min-h-screen bg-[#020617] px-6 py-10 text-white">
-    <section class="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl flex-col justify-center">
-      <p class="font-mono text-sm uppercase tracking-[0.35em] text-cyan-300">
-        Language selected: {{ selectedLanguage() }}
-      </p>
-
-      <h1 class="mt-6 text-4xl font-bold sm:text-6xl">Intro Chat coming next...</h1>
-
-      <p class="mt-5 max-w-2xl text-slate-400">
-        The cinematic language gate is ready. Next step: initialize the portfolio assistant.
-      </p>
-    </section>
-  </main>
+  <app-intro-chat
+    [language]="selectedLanguage()!"
+    (optionSelected)="onIntroOptionSelected($event)"
+    (backToLanguage)="backToLanguageGate()"
+  />
 }
