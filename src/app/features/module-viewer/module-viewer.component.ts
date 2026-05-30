@@ -9,6 +9,7 @@ import {
   computed,
 } from '@angular/core';
 import { gsap } from 'gsap';
+import { CoreProfileModuleComponent } from '../../shared/components/core-profile-module/core-profile-module.component';
 
 type PortfolioLanguage = 'ES' | 'EN';
 
@@ -33,6 +34,7 @@ interface ModuleData {
 @Component({
   selector: 'app-module-viewer',
   standalone: true,
+  imports: [CoreProfileModuleComponent],
   templateUrl: './module-viewer.component.html',
 })
 export class ModuleViewerComponent implements AfterViewInit {
