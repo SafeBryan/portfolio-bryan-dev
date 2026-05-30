@@ -66,39 +66,7 @@
         }
 
         @case ('database') {
-          <section class="grid gap-6 lg:grid-cols-[1fr_1fr]">
-            <div class="rounded-[32px] border border-violet-300/15 bg-violet-300/[0.045] p-6">
-              <p class="font-mono text-xs uppercase tracking-[0.3em] text-violet-200/70">
-                SQL Simulation
-              </p>
-
-              <pre
-                class="mt-5 overflow-auto rounded-2xl border border-white/10 bg-black/50 p-5 text-sm text-slate-300"
-              ><code>SELECT skill_name
-FROM developer_stack
-WHERE area = 'database';</code></pre>
-            </div>
-
-            <div class="rounded-[32px] border border-white/10 bg-black/35 p-6">
-              <div class="grid gap-3 font-mono text-sm">
-                <div
-                  class="rounded-2xl border border-violet-300/15 bg-white/[0.04] p-4 text-violet-100"
-                >
-                  ORACLE · SQL · PL/SQL
-                </div>
-                <div
-                  class="rounded-2xl border border-violet-300/15 bg-white/[0.04] p-4 text-violet-100"
-                >
-                  DATA MODELING · RELATIONS
-                </div>
-                <div
-                  class="rounded-2xl border border-violet-300/15 bg-white/[0.04] p-4 text-violet-100"
-                >
-                  REPOSITORY LAYER · JDBC
-                </div>
-              </div>
-            </div>
-          </section>
+          <app-database-vault-module [language]="language" />
         }
 
         @default {

@@ -12,6 +12,7 @@ import { gsap } from 'gsap';
 import { CoreProfileModuleComponent } from '../../shared/components/core-profile-module/core-profile-module.component';
 import { BackendEngineModuleComponent } from '../../shared/components/backend-engine-module/backend-engine-module.component';
 import { FrontendLabModuleComponent } from '../../shared/components/frontend-lab-module/frontend-lab-module.component';
+import { DatabaseVaultModuleComponent } from '../../shared/components/database-vault-module/database-vault-module.component';
 
 type PortfolioLanguage = 'ES' | 'EN';
 
@@ -36,7 +37,12 @@ interface ModuleData {
 @Component({
   selector: 'app-module-viewer',
   standalone: true,
-  imports: [CoreProfileModuleComponent, BackendEngineModuleComponent, FrontendLabModuleComponent],
+  imports: [
+    CoreProfileModuleComponent,
+    BackendEngineModuleComponent,
+    FrontendLabModuleComponent,
+    DatabaseVaultModuleComponent,
+  ],
   templateUrl: './module-viewer.component.html',
 })
 export class ModuleViewerComponent implements AfterViewInit {
