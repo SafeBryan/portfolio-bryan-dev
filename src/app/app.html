@@ -1,9 +1,37 @@
-@if (!selectedLanguage()) {
+@if (currentStep() === 'language') {
   <app-language-gate (languageSelected)="onLanguageSelected($event)" />
-} @else {
+}
+
+@if (currentStep() === 'chat' && selectedLanguage()) {
   <app-intro-chat
     [language]="selectedLanguage()!"
     (optionSelected)="onIntroOptionSelected($event)"
     (backToLanguage)="backToLanguageGate()"
   />
+}
+
+@if (currentStep() === 'warning' && selectedLanguage()) {
+  <app-system-warning
+    [language]="selectedLanguage()!"
+    [selectedOption]="selectedIntroOption()"
+    (sequenceFinished)="unlockExperienceMode()"
+    (skipRequested)="unlockExperienceMode()"
+  />
+}
+
+@if (currentStep() === 'experience') {
+  <main class="min-h-screen bg-[#020617] px-6 py-10 text-white">
+    <section class="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl flex-col justify-center">
+      <p class="font-mono text-sm uppercase tracking-[0.35em] text-emerald-300">
+        Experience Mode unlocked
+      </p>
+
+      <h1 class="mt-6 text-4xl font-bold sm:text-6xl">Bryan Dev System</h1>
+
+      <p class="mt-5 max-w-2xl text-slate-400">
+        El modo experiencia ya está activo. El siguiente paso será construir el hub principal del
+        portafolio.
+      </p>
+    </section>
+  </main>
 }
