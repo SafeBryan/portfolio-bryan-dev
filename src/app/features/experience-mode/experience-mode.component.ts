@@ -13,13 +13,14 @@ import {
   ExperienceIsland,
   ExperienceIslandComponent,
 } from '../../shared/components/experience-island/experience-island.component';
+import { ModuleViewerComponent } from '../module-viewer/module-viewer.component';
 
 type PortfolioLanguage = 'ES' | 'EN';
 
 @Component({
   selector: 'app-experience-mode',
   standalone: true,
-  imports: [ExperienceIslandComponent],
+  imports: [ExperienceIslandComponent, ModuleViewerComponent],
   templateUrl: './experience-mode.component.html',
 })
 export class ExperienceModeComponent implements AfterViewInit {
@@ -29,6 +30,7 @@ export class ExperienceModeComponent implements AfterViewInit {
   islandElements?: QueryList<ElementRef<HTMLElement>>;
 
   selectedIsland = signal<string>('core-profile');
+  viewerOpen = signal(false);
 
   content = computed(() => {
     if (this.language === 'EN') {
@@ -243,6 +245,11 @@ export class ExperienceModeComponent implements AfterViewInit {
 
   selectIsland(islandId: string): void {
     this.selectedIsland.set(islandId);
+    this.viewerOpen.set(true);
+  }
+
+  closeViewer(): void {
+    this.viewerOpen.set(false);
   }
 
   private animateIslands(): void {
