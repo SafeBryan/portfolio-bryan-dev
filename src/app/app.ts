@@ -2,13 +2,19 @@ import { Component, signal } from '@angular/core';
 import { LanguageGateComponent } from './features/language-gate/language-gate.component';
 import { IntroChatComponent } from './features/intro-chat/intro-chat.component';
 import { SystemWarningComponent } from './features/system-warning/system-warning.component';
+import { ExperienceModeComponent } from './features/experience-mode/experience-mode.component';
 
 type PortfolioLanguage = 'ES' | 'EN';
 type PortfolioStep = 'language' | 'chat' | 'warning' | 'experience';
 
 @Component({
   selector: 'app-root',
-  imports: [LanguageGateComponent, IntroChatComponent, SystemWarningComponent],
+  imports: [
+    LanguageGateComponent,
+    IntroChatComponent,
+    SystemWarningComponent,
+    ExperienceModeComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
