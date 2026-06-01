@@ -13,6 +13,7 @@ import { CoreProfileModuleComponent } from '../../shared/components/core-profile
 import { BackendEngineModuleComponent } from '../../shared/components/backend-engine-module/backend-engine-module.component';
 import { FrontendLabModuleComponent } from '../../shared/components/frontend-lab-module/frontend-lab-module.component';
 import { DatabaseVaultModuleComponent } from '../../shared/components/database-vault-module/database-vault-module.component';
+import { SecurityGateModuleComponent } from '../../shared/components/security-gate-module/security-gate-module.component';
 
 type PortfolioLanguage = 'ES' | 'EN';
 
@@ -42,6 +43,7 @@ interface ModuleData {
     BackendEngineModuleComponent,
     FrontendLabModuleComponent,
     DatabaseVaultModuleComponent,
+    SecurityGateModuleComponent,
   ],
   templateUrl: './module-viewer.component.html',
 })
