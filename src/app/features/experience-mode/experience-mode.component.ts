@@ -14,6 +14,7 @@ import {
   ExperienceIslandComponent,
 } from '../../shared/components/experience-island/experience-island.component';
 import { ModuleViewerComponent } from '../module-viewer/module-viewer.component';
+import { HiddenCompanionComponent } from '../../shared/components/hidden-companion/hidden-companion.component';
 
 type PortfolioLanguage = 'ES' | 'EN';
 
@@ -39,7 +40,7 @@ interface ExperienceModeContent {
 @Component({
   selector: 'app-experience-mode',
   standalone: true,
-  imports: [ExperienceIslandComponent, ModuleViewerComponent],
+  imports: [ExperienceIslandComponent, ModuleViewerComponent, HiddenCompanionComponent],
   templateUrl: './experience-mode.component.html',
 })
 export class ExperienceModeComponent implements AfterViewInit {
