@@ -3,8 +3,8 @@ import {
   Component,
   ElementRef,
   Input,
-  ViewChildren,
   QueryList,
+  ViewChildren,
   computed,
   signal,
 } from '@angular/core';
@@ -17,6 +17,25 @@ import { ModuleViewerComponent } from '../module-viewer/module-viewer.component'
 
 type PortfolioLanguage = 'ES' | 'EN';
 
+interface ExperienceModeContent {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  instruction: string;
+  status: string;
+  selected: string;
+  quickActions: {
+    cv: string;
+    github: string;
+    linkedin: string;
+  };
+  mapStats: {
+    label: string;
+    value: string;
+  }[];
+  islands: ExperienceIsland[];
+}
+
 @Component({
   selector: 'app-experience-mode',
   standalone: true,
@@ -26,13 +45,13 @@ type PortfolioLanguage = 'ES' | 'EN';
 export class ExperienceModeComponent implements AfterViewInit {
   @Input({ required: true }) language!: PortfolioLanguage;
 
-  @ViewChildren(ExperienceIslandComponent, { read: ElementRef })
-  islandElements?: QueryList<ElementRef<HTMLElement>>;
+  @ViewChildren('islandMotion', { read: ElementRef })
+  islandMotionElements?: QueryList<ElementRef<HTMLElement>>;
 
   selectedIsland = signal<string>('core-profile');
   viewerOpen = signal(false);
 
-  content = computed(() => {
+  content = computed<ExperienceModeContent>(() => {
     if (this.language === 'EN') {
       return {
         eyebrow: 'Experience Mode Unlocked',
@@ -47,89 +66,12 @@ export class ExperienceModeComponent implements AfterViewInit {
           github: 'GitHub',
           linkedin: 'LinkedIn',
         },
-        islands: [
-          {
-            id: 'core-profile',
-            title: 'Core Profile',
-            subtitle: 'Who I am, what I build and what I am focused on.',
-            code: 'CORE',
-            icon: '◆',
-            positionClass: 'lg:col-start-2 lg:row-start-1 lg:translate-y-4',
-            glowClass: 'bg-cyan-300/20 opacity-60',
-          },
-          {
-            id: 'frontend-lab',
-            title: 'Frontend Lab',
-            subtitle: 'Angular, TypeScript, Tailwind, dashboards and clean UI.',
-            code: 'UI',
-            icon: '⌁',
-            positionClass: 'lg:col-start-1 lg:row-start-1 lg:translate-y-14',
-            glowClass: 'bg-sky-300/20 opacity-40',
-          },
-          {
-            id: 'backend-engine',
-            title: 'Backend Engine',
-            subtitle: 'Java, Spring Boot, REST APIs, services and validations.',
-            code: 'API',
-            icon: '⚙',
-            positionClass: 'lg:col-start-3 lg:row-start-1 lg:translate-y-14',
-            glowClass: 'bg-emerald-300/20 opacity-40',
-          },
-          {
-            id: 'database-vault',
-            title: 'Database Vault',
-            subtitle: 'Oracle, SQL, PL/SQL, repositories and data modeling.',
-            code: 'DATA',
-            icon: '▣',
-            positionClass: 'lg:col-start-3 lg:row-start-2 lg:translate-y-8',
-            glowClass: 'bg-violet-300/20 opacity-40',
-          },
-          {
-            id: 'security-gate',
-            title: 'Security Gate',
-            subtitle: 'JWT, CORS, OWASP, headers, access control and ZAP.',
-            code: 'SEC',
-            icon: '⛨',
-            positionClass: 'lg:col-start-1 lg:row-start-2 lg:translate-y-8',
-            glowClass: 'bg-red-300/20 opacity-40',
-          },
-          {
-            id: 'project-vault',
-            title: 'Project Vault',
-            subtitle: 'Real project case files with problem, role, stack and impact.',
-            code: 'CASE',
-            icon: '◇',
-            positionClass: 'lg:col-start-2 lg:row-start-2 lg:-translate-y-2',
-            glowClass: 'bg-amber-300/20 opacity-40',
-          },
-          {
-            id: 'timeline',
-            title: 'Experience Timeline',
-            subtitle: 'University, internships, work experience and growth path.',
-            code: 'TIME',
-            icon: '◷',
-            positionClass: 'lg:col-start-1 lg:row-start-3 lg:-translate-y-2',
-            glowClass: 'bg-blue-300/20 opacity-35',
-          },
-          {
-            id: 'developer-lab',
-            title: 'Developer Lab',
-            subtitle: 'Experiments, components, practices and technical notes.',
-            code: 'LAB',
-            icon: '✦',
-            positionClass: 'lg:col-start-3 lg:row-start-3 lg:-translate-y-2',
-            glowClass: 'bg-teal-300/20 opacity-35',
-          },
-          {
-            id: 'contact-portal',
-            title: 'Contact Portal',
-            subtitle: 'Email, GitHub, LinkedIn, CV and professional availability.',
-            code: 'LINK',
-            icon: '⌬',
-            positionClass: 'lg:col-start-2 lg:row-start-3 lg:translate-y-8',
-            glowClass: 'bg-cyan-300/20 opacity-35',
-          },
-        ] as ExperienceIsland[],
+        mapStats: [
+          { label: 'Mode', value: 'Interactive technical map' },
+          { label: 'Modules', value: '9 specialized areas' },
+          { label: 'Stack', value: 'Angular · Java · Oracle · Security' },
+        ],
+        islands: this.getIslandsEn(),
       };
     }
 
@@ -146,89 +88,12 @@ export class ExperienceModeComponent implements AfterViewInit {
         github: 'GitHub',
         linkedin: 'LinkedIn',
       },
-      islands: [
-        {
-          id: 'core-profile',
-          title: 'Core Profile',
-          subtitle: 'Quién soy, qué construyo y hacia dónde estoy enfocado.',
-          code: 'CORE',
-          icon: '◆',
-          positionClass: 'lg:col-start-2 lg:row-start-1 lg:translate-y-4',
-          glowClass: 'bg-cyan-300/20 opacity-60',
-        },
-        {
-          id: 'frontend-lab',
-          title: 'Frontend Lab',
-          subtitle: 'Angular, TypeScript, Tailwind, dashboards e interfaces limpias.',
-          code: 'UI',
-          icon: '⌁',
-          positionClass: 'lg:col-start-1 lg:row-start-1 lg:translate-y-14',
-          glowClass: 'bg-sky-300/20 opacity-40',
-        },
-        {
-          id: 'backend-engine',
-          title: 'Backend Engine',
-          subtitle: 'Java, Spring Boot, APIs REST, servicios y validaciones.',
-          code: 'API',
-          icon: '⚙',
-          positionClass: 'lg:col-start-3 lg:row-start-1 lg:translate-y-14',
-          glowClass: 'bg-emerald-300/20 opacity-40',
-        },
-        {
-          id: 'database-vault',
-          title: 'Database Vault',
-          subtitle: 'Oracle, SQL, PL/SQL, repositorios y modelado de datos.',
-          code: 'DATA',
-          icon: '▣',
-          positionClass: 'lg:col-start-3 lg:row-start-2 lg:translate-y-8',
-          glowClass: 'bg-violet-300/20 opacity-40',
-        },
-        {
-          id: 'security-gate',
-          title: 'Security Gate',
-          subtitle: 'JWT, CORS, OWASP, headers, control de acceso y ZAP.',
-          code: 'SEC',
-          icon: '⛨',
-          positionClass: 'lg:col-start-1 lg:row-start-2 lg:translate-y-8',
-          glowClass: 'bg-red-300/20 opacity-40',
-        },
-        {
-          id: 'project-vault',
-          title: 'Project Vault',
-          subtitle: 'Casos técnicos reales con problema, rol, stack e impacto.',
-          code: 'CASE',
-          icon: '◇',
-          positionClass: 'lg:col-start-2 lg:row-start-2 lg:-translate-y-2',
-          glowClass: 'bg-amber-300/20 opacity-40',
-        },
-        {
-          id: 'timeline',
-          title: 'Experience Timeline',
-          subtitle: 'Universidad, pasantías, experiencia laboral y crecimiento técnico.',
-          code: 'TIME',
-          icon: '◷',
-          positionClass: 'lg:col-start-1 lg:row-start-3 lg:-translate-y-2',
-          glowClass: 'bg-blue-300/20 opacity-35',
-        },
-        {
-          id: 'developer-lab',
-          title: 'Developer Lab',
-          subtitle: 'Experimentos, componentes, prácticas y notas técnicas.',
-          code: 'LAB',
-          icon: '✦',
-          positionClass: 'lg:col-start-3 lg:row-start-3 lg:-translate-y-2',
-          glowClass: 'bg-teal-300/20 opacity-35',
-        },
-        {
-          id: 'contact-portal',
-          title: 'Contact Portal',
-          subtitle: 'Correo, GitHub, LinkedIn, CV y disponibilidad profesional.',
-          code: 'LINK',
-          icon: '⌬',
-          positionClass: 'lg:col-start-2 lg:row-start-3 lg:translate-y-8',
-          glowClass: 'bg-cyan-300/20 opacity-35',
-        },
-      ] as ExperienceIsland[],
+      mapStats: [
+        { label: 'Modo', value: 'Mapa técnico interactivo' },
+        { label: 'Módulos', value: '9 áreas especializadas' },
+        { label: 'Stack', value: 'Angular · Java · Oracle · Seguridad' },
+      ],
+      islands: this.getIslandsEs(),
     };
   });
 
@@ -240,7 +105,11 @@ export class ExperienceModeComponent implements AfterViewInit {
   });
 
   ngAfterViewInit(): void {
-    this.animateIslands();
+    queueMicrotask(() => this.animateIslands());
+  }
+
+  previewIsland(islandId: string): void {
+    this.selectedIsland.set(islandId);
   }
 
   selectIsland(islandId: string): void {
@@ -250,29 +119,210 @@ export class ExperienceModeComponent implements AfterViewInit {
 
   closeViewer(): void {
     this.viewerOpen.set(false);
+
+    queueMicrotask(() => {
+      this.animateIslands();
+    });
   }
 
   private animateIslands(): void {
-    const elements = this.islandElements?.map((item) => item.nativeElement) ?? [];
+    const elements = this.islandMotionElements?.map((item) => item.nativeElement) ?? [];
+
+    if (!elements.length) return;
+
+    gsap.killTweensOf(elements);
 
     gsap.from(elements, {
       opacity: 0,
-      y: 28,
-      scale: 0.94,
-      duration: 0.75,
+      y: 24,
+      scale: 0.96,
+      duration: 0.7,
       ease: 'power3.out',
-      stagger: 0.08,
+      stagger: 0.07,
     });
 
     elements.forEach((element, index) => {
       gsap.to(element, {
-        y: index % 2 === 0 ? -8 : 8,
-        duration: 3.4 + index * 0.12,
+        y: index % 2 === 0 ? -7 : 7,
+        rotate: index % 3 === 0 ? 0.35 : -0.35,
+        duration: 3.8 + index * 0.14,
         ease: 'sine.inOut',
         repeat: -1,
         yoyo: true,
-        delay: index * 0.15,
+        delay: 0.2 + index * 0.12,
       });
     });
+  }
+
+  private getIslandsEs(): ExperienceIsland[] {
+    return [
+      {
+        id: 'core-profile',
+        title: 'Core Profile',
+        subtitle: 'Quién soy, qué construyo y hacia dónde estoy enfocado.',
+        code: 'CORE',
+        icon: '◆',
+        positionClass: 'xl:translate-y-0',
+        glowClass: 'bg-cyan-300/20 opacity-60',
+      },
+      {
+        id: 'frontend-lab',
+        title: 'Frontend Lab',
+        subtitle: 'Angular, TypeScript, Tailwind, dashboards e interfaces limpias.',
+        code: 'UI',
+        icon: '⌁',
+        positionClass: 'xl:translate-y-10',
+        glowClass: 'bg-sky-300/20 opacity-45',
+      },
+      {
+        id: 'backend-engine',
+        title: 'Backend Engine',
+        subtitle: 'Java, Spring Boot, APIs REST, servicios y validaciones.',
+        code: 'API',
+        icon: '⚙',
+        positionClass: 'xl:translate-y-0',
+        glowClass: 'bg-emerald-300/20 opacity-45',
+      },
+      {
+        id: 'database-vault',
+        title: 'Database Vault',
+        subtitle: 'Oracle, SQL, PL/SQL, repositorios y modelado de datos.',
+        code: 'DATA',
+        icon: '▣',
+        positionClass: 'xl:-translate-y-1',
+        glowClass: 'bg-violet-300/20 opacity-45',
+      },
+      {
+        id: 'security-gate',
+        title: 'Security Gate',
+        subtitle: 'JWT, CORS, OWASP, headers, control de acceso y ZAP.',
+        code: 'SEC',
+        icon: '⬟',
+        positionClass: 'xl:translate-y-8',
+        glowClass: 'bg-rose-300/20 opacity-45',
+      },
+      {
+        id: 'project-vault',
+        title: 'Project Vault',
+        subtitle: 'Casos técnicos reales con problema, rol, stack e impacto.',
+        code: 'CASE',
+        icon: '◇',
+        positionClass: 'xl:-translate-y-5',
+        glowClass: 'bg-amber-300/20 opacity-45',
+      },
+      {
+        id: 'timeline',
+        title: 'Experience Timeline',
+        subtitle: 'Universidad, pasantías, experiencia laboral y crecimiento técnico.',
+        code: 'TIME',
+        icon: '◷',
+        positionClass: 'xl:-translate-y-1',
+        glowClass: 'bg-blue-300/20 opacity-40',
+      },
+      {
+        id: 'developer-lab',
+        title: 'Developer Lab',
+        subtitle: 'Experimentos, componentes, prácticas y notas técnicas.',
+        code: 'LAB',
+        icon: '✦',
+        positionClass: 'xl:translate-y-8',
+        glowClass: 'bg-teal-300/20 opacity-40',
+      },
+      {
+        id: 'contact-portal',
+        title: 'Contact Portal',
+        subtitle: 'Correo, GitHub, LinkedIn, CV y disponibilidad profesional.',
+        code: 'LINK',
+        icon: '⌬',
+        positionClass: 'xl:translate-y-0',
+        glowClass: 'bg-cyan-300/20 opacity-40',
+      },
+    ];
+  }
+
+  private getIslandsEn(): ExperienceIsland[] {
+    return [
+      {
+        id: 'core-profile',
+        title: 'Core Profile',
+        subtitle: 'Who I am, what I build and what I am focused on.',
+        code: 'CORE',
+        icon: '◆',
+        positionClass: 'xl:translate-y-0',
+        glowClass: 'bg-cyan-300/20 opacity-60',
+      },
+      {
+        id: 'frontend-lab',
+        title: 'Frontend Lab',
+        subtitle: 'Angular, TypeScript, Tailwind, dashboards and clean UI.',
+        code: 'UI',
+        icon: '⌁',
+        positionClass: 'xl:translate-y-10',
+        glowClass: 'bg-sky-300/20 opacity-45',
+      },
+      {
+        id: 'backend-engine',
+        title: 'Backend Engine',
+        subtitle: 'Java, Spring Boot, REST APIs, services and validations.',
+        code: 'API',
+        icon: '⚙',
+        positionClass: 'xl:translate-y-0',
+        glowClass: 'bg-emerald-300/20 opacity-45',
+      },
+      {
+        id: 'database-vault',
+        title: 'Database Vault',
+        subtitle: 'Oracle, SQL, PL/SQL, repositories and data modeling.',
+        code: 'DATA',
+        icon: '▣',
+        positionClass: 'xl:-translate-y-1',
+        glowClass: 'bg-violet-300/20 opacity-45',
+      },
+      {
+        id: 'security-gate',
+        title: 'Security Gate',
+        subtitle: 'JWT, CORS, OWASP, headers, access control and ZAP.',
+        code: 'SEC',
+        icon: '⬟',
+        positionClass: 'xl:translate-y-8',
+        glowClass: 'bg-rose-300/20 opacity-45',
+      },
+      {
+        id: 'project-vault',
+        title: 'Project Vault',
+        subtitle: 'Real project case files with problem, role, stack and impact.',
+        code: 'CASE',
+        icon: '◇',
+        positionClass: 'xl:-translate-y-5',
+        glowClass: 'bg-amber-300/20 opacity-45',
+      },
+      {
+        id: 'timeline',
+        title: 'Experience Timeline',
+        subtitle: 'University, internships, work experience and growth path.',
+        code: 'TIME',
+        icon: '◷',
+        positionClass: 'xl:-translate-y-1',
+        glowClass: 'bg-blue-300/20 opacity-40',
+      },
+      {
+        id: 'developer-lab',
+        title: 'Developer Lab',
+        subtitle: 'Experiments, components, practices and technical notes.',
+        code: 'LAB',
+        icon: '✦',
+        positionClass: 'xl:translate-y-8',
+        glowClass: 'bg-teal-300/20 opacity-40',
+      },
+      {
+        id: 'contact-portal',
+        title: 'Contact Portal',
+        subtitle: 'Email, GitHub, LinkedIn, CV and professional availability.',
+        code: 'LINK',
+        icon: '⌬',
+        positionClass: 'xl:translate-y-0',
+        glowClass: 'bg-cyan-300/20 opacity-40',
+      },
+    ];
   }
 }

@@ -17,6 +17,7 @@ import { SecurityGateModuleComponent } from '../../shared/components/security-ga
 import { ExperienceTimelineModuleComponent } from '../../shared/components/experience-timeline-module/experience-timeline-module.component';
 import { DeveloperLabModuleComponent } from '../../shared/components/developer-lab-module/developer-lab-module.component';
 import { ContactPortalModuleComponent } from '../../shared/components/contact-portal-module/contact-portal-module.component';
+import { ProjectVaultModuleComponent } from '../../shared/components/project-vault-module/project-vault-module.component';
 
 type PortfolioLanguage = 'ES' | 'EN';
 
@@ -47,6 +48,7 @@ interface ModuleData {
     FrontendLabModuleComponent,
     DatabaseVaultModuleComponent,
     SecurityGateModuleComponent,
+    ProjectVaultModuleComponent,
     ExperienceTimelineModuleComponent,
     DeveloperLabModuleComponent,
     ContactPortalModuleComponent,
