@@ -73,6 +73,10 @@
           <app-security-gate-module [language]="language" />
         }
 
+        @case ('timeline') {
+          <app-experience-timeline-module [language]="language" />
+        }
+
         @default {
           <section class="rounded-[32px] border border-white/10 bg-white/[0.045] p-6">
             <p class="font-mono text-xs uppercase tracking-[0.35em] text-cyan-200/70">
