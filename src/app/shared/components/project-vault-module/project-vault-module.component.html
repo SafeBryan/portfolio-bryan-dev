@@ -74,15 +74,15 @@
           class="relative z-10 flex h-36 w-36 flex-col items-center justify-center rounded-full border border-amber-300/30 bg-black/70 text-center shadow-[0_0_70px_rgba(245,158,11,0.18)] transition duration-300 hover:scale-105 hover:border-amber-300/70"
         >
           <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-amber-200/70">
-            Project
+            {{ content().vaultCenterLabel }}
           </span>
 
           <span class="mt-2 text-4xl font-black text-white">
-            {{ vaultUnlocked() ? 'OPEN' : 'LOCK' }}
+            {{ vaultUnlocked() ? content().vaultOpen : content().vaultLock }}
           </span>
 
           <span class="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
-            {{ vaultUnlocked() ? 'access granted' : 'click to unlock' }}
+            {{ vaultUnlocked() ? content().vaultAccessGranted : content().vaultClickToUnlock }}
           </span>
         </button>
 
@@ -101,7 +101,9 @@
     <article
       class="rounded-[34px] border border-white/10 bg-black/40 p-8 text-center shadow-[0_24px_90px_rgba(0,0,0,0.32)]"
     >
-      <p class="font-mono text-xs uppercase tracking-[0.32em] text-slate-500">vault.waiting</p>
+      <p class="font-mono text-xs uppercase tracking-[0.32em] text-slate-500">
+        {{ content().vaultWaiting }}
+      </p>
 
       <h3 class="mt-4 text-3xl font-black text-white">
         {{ content().lockedLabel }}
@@ -129,13 +131,15 @@
                 {{ content().caseFilesLabel }}
               </p>
 
-              <h3 class="mt-3 text-3xl font-black text-white">Case index</h3>
+              <h3 class="mt-3 text-3xl font-black text-white">
+                {{ content().caseIndexTitle }}
+              </h3>
             </div>
 
             <span
               class="rounded-full border border-emerald-300/20 bg-emerald-300/[0.07] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-emerald-200"
             >
-              {{ content().projects.length }} files
+              {{ content().projects.length }} {{ content().filesLabel }}
             </span>
           </div>
 
@@ -164,6 +168,22 @@
                     <p class="mt-2 text-sm text-slate-400">
                       {{ project.category }}
                     </p>
+
+                    @if (project.links.length > 0) {
+                      <p
+                        class="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-200/70"
+                      >
+                        {{ content().linkAvailable }}
+                      </p>
+                    }
+
+                    @if (project.images.length > 0) {
+                      <p
+                        class="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-violet-200/70"
+                      >
+                        {{ content().intranetNote }}
+                      </p>
+                    }
                   </div>
 
                   <span
@@ -286,6 +306,57 @@
                 }
               </div>
             </section>
+
+            @if (selectedProject().images.length > 0) {
+              <section class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+                <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-amber-200/70">
+                  {{ content().imagesLabel }}
+                </p>
+
+                <div class="mt-4 grid gap-4 md:grid-cols-2">
+                  @for (image of selectedProject().images; track image.src) {
+                    <figure
+                      class="overflow-hidden rounded-[22px] border border-white/10 bg-black/35"
+                    >
+                      <img
+                        [src]="image.src"
+                        [alt]="image.alt"
+                        class="h-48 w-full object-cover transition duration-300 hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+
+                      <figcaption
+                        class="border-t border-white/10 px-4 py-3 text-xs leading-5 text-slate-400"
+                      >
+                        {{ image.alt }}
+                      </figcaption>
+                    </figure>
+                  }
+                </div>
+              </section>
+            }
+
+            @if (selectedProject().links.length > 0) {
+              <section class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+                <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-amber-200/70">
+                  {{ content().linksLabel }}
+                </p>
+
+                <div class="mt-4 flex flex-wrap gap-3">
+                  @for (link of selectedProject().links; track link.href) {
+                    <a
+                      [href]="link.href"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] transition hover:-translate-y-0.5"
+                      [class]="getLinkClass(link.type)"
+                    >
+                      {{ link.label }}
+                    </a>
+                  }
+                </div>
+              </section>
+            }
           </div>
         </div>
       </article>

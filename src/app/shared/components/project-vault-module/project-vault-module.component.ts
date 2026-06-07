@@ -2,18 +2,31 @@ import { Component, Input, computed, signal } from '@angular/core';
 
 type PortfolioLanguage = 'ES' | 'EN';
 
+interface ProjectLink {
+  label: string;
+  href: string;
+  type: 'live' | 'repo' | 'demo' | 'docs';
+}
+
+interface ProjectImage {
+  src: string;
+  alt: string;
+}
+
 interface ProjectCase {
   id: string;
   code: string;
   title: string;
   category: string;
-  status: 'production' | 'academic' | 'security' | 'portfolio' | 'internal';
+  status: 'production' | 'intranet' | 'development' | 'academic' | 'portfolio';
   problem: string;
   solution: string;
   role: string;
   impact: string;
   stack: string[];
   highlights: string[];
+  links: ProjectLink[];
+  images: ProjectImage[];
 }
 
 @Component({
@@ -25,7 +38,7 @@ export class ProjectVaultModuleComponent {
   @Input({ required: true }) language!: PortfolioLanguage;
 
   vaultUnlocked = signal(false);
-  selectedProjectId = signal('uniandes-payments');
+  selectedProjectId = signal('uniandes-payment-button');
 
   content = computed(() => {
     if (this.language === 'EN') {
@@ -33,21 +46,33 @@ export class ProjectVaultModuleComponent {
         eyebrow: 'Technical case vault',
         title: 'Project Vault',
         subtitle:
-          'A digital vault of real and representative projects presented as technical case files.',
+          'A digital vault of real, internal, academic and personal projects presented as technical case files.',
         description:
-          'Each case file explains the problem, my contribution, the solution, the stack used and the impact of the work. The goal is to show not only what I built, but how I think as a developer.',
+          'Each case file explains the context, my contribution, the solution, the stack used and the impact. Public systems include links; intranet systems are shown with screenshots only.',
         lockedLabel: 'Vault locked',
         unlockButton: 'Unlock project vault',
         unlockedLabel: 'Access granted',
         caseFilesLabel: 'Case files loaded',
         selectedLabel: 'Selected case',
-        problemLabel: 'Problem',
+        problemLabel: 'Context / Problem',
         solutionLabel: 'Solution',
         roleLabel: 'My role',
         impactLabel: 'Impact',
         stackLabel: 'Stack',
         highlightsLabel: 'Technical highlights',
+        linksLabel: 'Project links',
+        imagesLabel: 'Project screenshots',
         emptyState: 'Unlock the vault to inspect the technical case files.',
+        caseIndexTitle: 'Case index',
+        filesLabel: 'files',
+        vaultWaiting: 'vault.waiting',
+        vaultCenterLabel: 'Project',
+        vaultOpen: 'OPEN',
+        vaultLock: 'LOCK',
+        vaultAccessGranted: 'access granted',
+        vaultClickToUnlock: 'click to unlock',
+        linkAvailable: 'link.available = true',
+        intranetNote: 'intranet.preview = screenshots only',
         projects: this.getProjectsEn(),
       };
     }
@@ -56,21 +81,33 @@ export class ProjectVaultModuleComponent {
       eyebrow: 'Bóveda de casos técnicos',
       title: 'Project Vault',
       subtitle:
-        'Una bóveda digital de proyectos reales y representativos presentados como expedientes técnicos.',
+        'Una bóveda digital de proyectos reales, internos, universitarios y personales presentados como expedientes técnicos.',
       description:
-        'Cada expediente explica el problema, mi aporte, la solución implementada, el stack utilizado y el impacto del trabajo. La idea es mostrar no solo qué construí, sino cómo pienso como desarrollador.',
+        'Cada expediente explica el contexto, mi aporte, la solución implementada, el stack utilizado y el impacto. Los sistemas públicos incluyen enlace; los sistemas de intranet se muestran solo con capturas.',
       lockedLabel: 'Bóveda bloqueada',
       unlockButton: 'Desbloquear bóveda',
       unlockedLabel: 'Acceso concedido',
       caseFilesLabel: 'Expedientes cargados',
       selectedLabel: 'Caso seleccionado',
-      problemLabel: 'Problema',
+      problemLabel: 'Contexto / Problema',
       solutionLabel: 'Solución',
       roleLabel: 'Mi rol',
       impactLabel: 'Impacto',
       stackLabel: 'Stack',
       highlightsLabel: 'Puntos técnicos',
+      linksLabel: 'Enlaces del proyecto',
+      imagesLabel: 'Capturas del proyecto',
       emptyState: 'Desbloquea la bóveda para inspeccionar los expedientes técnicos.',
+      caseIndexTitle: 'Índice de casos',
+      filesLabel: 'archivos',
+      vaultWaiting: 'vault.waiting',
+      vaultCenterLabel: 'Proyecto',
+      vaultOpen: 'ABIERTO',
+      vaultLock: 'LOCK',
+      vaultAccessGranted: 'acceso concedido',
+      vaultClickToUnlock: 'clic para abrir',
+      linkAvailable: 'link.available = true',
+      intranetNote: 'intranet.preview = solo capturas',
       projects: this.getProjectsEs(),
     };
   });
@@ -93,132 +130,233 @@ export class ProjectVaultModuleComponent {
   getStatusClass(status: ProjectCase['status']): string {
     const classes: Record<ProjectCase['status'], string> = {
       production: 'border-emerald-300/25 bg-emerald-300/[0.08] text-emerald-200',
+      intranet: 'border-violet-300/25 bg-violet-300/[0.08] text-violet-200',
+      development: 'border-cyan-300/25 bg-cyan-300/[0.08] text-cyan-200',
       academic: 'border-sky-300/25 bg-sky-300/[0.08] text-sky-200',
-      security: 'border-rose-300/25 bg-rose-300/[0.08] text-rose-200',
       portfolio: 'border-amber-300/25 bg-amber-300/[0.08] text-amber-200',
-      internal: 'border-cyan-300/25 bg-cyan-300/[0.08] text-cyan-200',
     };
 
     return classes[status];
   }
 
+  getLinkClass(type: ProjectLink['type']): string {
+    const classes: Record<ProjectLink['type'], string> = {
+      live: 'border-emerald-300/25 bg-emerald-300/[0.08] text-emerald-100 hover:border-emerald-300/60 hover:bg-emerald-300/[0.12]',
+      repo: 'border-sky-300/25 bg-sky-300/[0.08] text-sky-100 hover:border-sky-300/60 hover:bg-sky-300/[0.12]',
+      demo: 'border-amber-300/25 bg-amber-300/[0.08] text-amber-100 hover:border-amber-300/60 hover:bg-amber-300/[0.12]',
+      docs: 'border-violet-300/25 bg-violet-300/[0.08] text-violet-100 hover:border-violet-300/60 hover:bg-violet-300/[0.12]',
+    };
+
+    return classes[type];
+  }
+
   private getProjectsEs(): ProjectCase[] {
     return [
       {
-        id: 'uniandes-payments',
+        id: 'uniandes-payment-button',
         code: 'CASE-001',
-        title: 'Sistema de Pagos Académicos / Uniandes',
-        category: 'Flujo de pagos empresarial',
+        title: 'Botón de Pagos UNIANDES',
+        category: 'Sistema académico desplegado',
         status: 'production',
         problem:
-          'Los estudiantes necesitaban una forma más clara y segura de revisar deudas, seleccionar documentos y continuar el proceso de pago.',
+          'Los estudiantes necesitaban una plataforma clara para consultar valores pendientes, seleccionar conceptos de pago y continuar el proceso de transacción académica en línea.',
         solution:
-          'Construcción y mejora de flujos frontend conectados a servicios backend, con manejo de estado, validaciones, agrupación de deudas y selección de medios de pago.',
-        role: 'Desarrollo frontend, integración con APIs, manejo de estados de interfaz, mejoras visuales y validación del flujo.',
+          'Participación en la mejora del portal de pagos, integrando flujos de consulta, selección de documentos, validaciones, medios de pago, confirmación y visualización de resultados.',
+        role: 'Desarrollo frontend con Angular, integración con servicios backend, manejo de estados, validaciones visuales, mejoras responsive y soporte en el flujo de pasarela.',
         impact:
-          'Mayor claridad en el proceso de pago, reducción de fricción para el usuario y mejor trazabilidad de documentos seleccionados.',
-        stack: ['Angular', 'TypeScript', 'TailwindCSS', 'Java/Jakarta EE', 'Oracle', 'REST APIs'],
-        highlights: [
-          'Visualización de deudas agrupadas',
-          'Selección de documentos de pago',
-          'Dashboard responsivo de estudiante',
-          'Manejo de estado conectado a APIs',
+          'Mejora de la experiencia del estudiante, mayor claridad en la selección de pagos y soporte a un proceso institucional crítico.',
+        stack: [
+          'Angular',
+          'TypeScript',
+          'TailwindCSS',
+          'Java/Jakarta EE',
+          'Oracle',
+          'REST APIs',
+          'Nuvei/Paymentez',
         ],
+        highlights: [
+          'Consulta de deudas académicas',
+          'Selección de documentos de pago',
+          'Integración con pasarela',
+          'Confirmación de transacciones',
+          'Pantallas de resultado',
+          'Validaciones de flujo',
+        ],
+        links: [
+          {
+            label: 'Abrir portal',
+            href: 'https://botonpagosuniandes.edu.ec/pagos',
+            type: 'live',
+          },
+        ],
+        images: [],
+      },
+      {
+        id: 'aseticket',
+        code: 'CASE-002',
+        title: 'AseTicket',
+        category: 'Sistema de tickets desplegado',
+        status: 'production',
+        problem:
+          'La gestión de soporte necesitaba una forma ordenada de registrar solicitudes, dar seguimiento a tickets, controlar estados y facilitar la atención a usuarios o clientes.',
+        solution:
+          'Desarrollo y mejora de funcionalidades orientadas al registro, consulta y seguimiento de tickets, con una interfaz clara para operar solicitudes de soporte.',
+        role: 'Apoyo full stack en vistas, consumo de servicios, validaciones de formularios, ajustes de interfaz y mejoras de experiencia de usuario.',
+        impact:
+          'Mayor trazabilidad de solicitudes, organización del soporte y mejor visibilidad del estado de atención.',
+        stack: [
+          'Angular',
+          'TypeScript',
+          'TailwindCSS',
+          'Java',
+          'Jakarta EE',
+          'Oracle',
+          'REST APIs',
+        ],
+        highlights: [
+          'Registro de tickets',
+          'Seguimiento de solicitudes',
+          'Estados del proceso',
+          'Interfaz operativa',
+          'Validaciones de formularios',
+          'Trazabilidad de atención',
+        ],
+        links: [
+          {
+            label: 'Abrir sistema',
+            href: 'https://asecom.com.ec:9443/login',
+            type: 'live',
+          },
+        ],
+        images: [],
+      },
+      {
+        id: 'eeasa-pasantias',
+        code: 'CASE-003',
+        title: 'Sistema de Pasantías EEASA',
+        category: 'Sistema institucional de intranet',
+        status: 'intranet',
+        problem:
+          'El proceso de pasantías necesitaba seguimiento, monitoreo y mejoras continuas para mantener un flujo más ordenado de actividades, validaciones y comunicación entre actores internos.',
+        solution:
+          'Monitoreo, revisión y mejora progresiva del módulo de pasantías, apoyando en ajustes de flujo, validación de estados, organización de información y documentación técnica.',
+        role: 'Monitoreo del sistema, revisión de funcionamiento, apoyo en mejoras, análisis de incidencias, documentación y seguimiento de procesos internos.',
+        impact:
+          'Mayor control del flujo de pasantías, mejor seguimiento de actividades y soporte a procesos institucionales internos.',
+        stack: ['Java', 'PL/SQL', 'Oracle', 'HTML/CSS', 'Sistema institucional', 'Intranet'],
+        highlights: [
+          'Monitoreo de actividades',
+          'Seguimiento de estados',
+          'Validación de procesos internos',
+          'Mejoras sobre módulo existente',
+          'Documentación técnica',
+          'Soporte a flujo institucional',
+        ],
+        links: [],
+        images: [
+          {
+            src: '/images/projects/eeasa-pasantias-01.png',
+            alt: 'Captura del sistema de pasantías EEASA',
+          },
+          {
+            src: '/images/projects/eeasa-pasantias-02.png',
+            alt: 'Vista interna del módulo de pasantías EEASA',
+          },
+        ],
+      },
+      {
+        id: 'asefin-internal-system',
+        code: 'CASE-004',
+        title: 'Sistema Financiero Interno ASEFIN',
+        category: 'Sistema financiero interno en desarrollo',
+        status: 'development',
+        problem:
+          'La cooperativa requiere mejorar y modernizar módulos internos relacionados con procesos financieros, administración de clientes y operaciones internas.',
+        solution:
+          'Desarrollo progresivo de funcionalidades internas con Angular, Java y Oracle, priorizando estructura clara, pantallas mantenibles e integración con servicios existentes.',
+        role: 'Apoyo full stack en construcción de pantallas, consumo de endpoints, validaciones, servicios Java, consultas Oracle y documentación técnica.',
+        impact:
+          'Mejora progresiva de mantenibilidad, trazabilidad y consistencia visual dentro de módulos financieros internos.',
+        stack: [
+          'Angular',
+          'TypeScript',
+          'TailwindCSS',
+          'Java',
+          'Spring Boot',
+          'Oracle',
+          'REST APIs',
+        ],
+        highlights: [
+          'Módulos internos',
+          'Pantallas administrativas',
+          'Consumo de servicios',
+          'Validaciones de datos',
+          'Consultas Oracle',
+          'Diseño empresarial',
+        ],
+        links: [],
+        images: [],
       },
       {
         id: 'asefin-client-portal',
-        code: 'CASE-002',
-        title: 'Portal Financiero / ASEFIN',
-        category: 'Sistema web financiero',
-        status: 'production',
-        problem:
-          'Los módulos financieros requerían una gestión más clara de clientes, pantallas estructuradas e integración frontend/backend mantenible.',
-        solution:
-          'Implementación de vistas de clientes, formularios, pantallas de detalle e integraciones con servicios siguiendo una estructura orientada a procesos de negocio.',
-        role: 'Apoyo full stack con pantallas Angular, servicios Java, acceso a datos Oracle y documentación técnica.',
-        impact:
-          'Mejor mantenibilidad, claridad para el usuario y consistencia entre módulos administrativos financieros.',
-        stack: ['Angular', 'Java', 'Spring Boot', 'Oracle', 'JWT', 'REST APIs'],
-        highlights: [
-          'Módulo de detalle de cliente',
-          'Formularios estructurados',
-          'Secciones UI reutilizables',
-          'Integración backend',
-        ],
-      },
-      {
-        id: 'client-relations-documents',
-        code: 'CASE-003',
-        title: 'Clientes, Relaciones y Documentos',
-        category: 'Módulo de proceso empresarial',
-        status: 'internal',
-        problem:
-          'Las relaciones de clientes y el manejo documental necesitaban separarse de estructuras legacy y representarse en un flujo más limpio.',
-        solution:
-          'Trabajo en pantallas y lógica de servicios para relaciones, garantías y documentos digitalizados mediante flujos empresariales validados.',
-        role: 'Implementación frontend, consumo de endpoints backend, alineación de payloads y consistencia visual.',
-        impact:
-          'Mejor separación de responsabilidades, gestión más clara del proceso y mayor trazabilidad de datos.',
-        stack: ['Angular', 'TypeScript', 'TailwindCSS', 'Java', 'Oracle', 'JDBC'],
-        highlights: [
-          'Flujo de creación de relaciones',
-          'Gestión documental UI',
-          'Feedback de validaciones',
-          'Diseño empresarial consistente',
-        ],
-      },
-      {
-        id: 'payment-orders-dashboard',
-        code: 'CASE-004',
-        title: 'Dashboard de Órdenes de Pago',
-        category: 'Dashboard y analítica',
-        status: 'internal',
-        problem:
-          'Las órdenes de pago requerían un dashboard compacto con KPIs, resumen de estados, ingresos mensuales y registros recientes.',
-        solution:
-          'Diseño de secciones de dashboard con gráficos, filtros, tablas responsivas y tarjetas visuales compactas.',
-        role: 'Arquitectura frontend, UI de dashboard, consumo de servicios y diseño responsive.',
-        impact:
-          'Mejor visibilidad del estado de órdenes, resúmenes financieros y actividad reciente.',
-        stack: ['Angular', 'Signals', 'ng2-charts', 'TypeScript', 'TailwindCSS', 'REST APIs'],
-        highlights: [
-          'Cards KPI',
-          'Gráficos y resúmenes',
-          'Tabla de órdenes recientes',
-          'Filtros por fecha',
-        ],
-      },
-      {
-        id: 'owasp-zap-audit',
         code: 'CASE-005',
-        title: 'Auditoría OWASP ZAP / Juice Shop',
-        category: 'Práctica de seguridad',
-        status: 'security',
+        title: 'Portal de Cliente ASEFIN',
+        category: 'Portal de cliente en desarrollo',
+        status: 'development',
         problem:
-          'Una aplicación vulnerable debía analizarse mediante DAST, pruebas manuales y razonamiento basado en OWASP.',
+          'Los clientes necesitan un portal más claro para consultar información, acceder a servicios digitales y realizar operaciones de forma guiada.',
         solution:
-          'Ejecución de escaneos ZAP, revisión de alertas, validación de control de acceso y documentación de hallazgos con evidencias.',
-        role: 'Pruebas de seguridad, recolección de evidencias, análisis de hallazgos y documentación orientada a remediación.',
+          'Desarrollo pendiente y progresivo de un portal orientado al cliente, con enfoque en experiencia de usuario, seguridad, consulta de información e integración con servicios financieros.',
+        role: 'Apoyo en diseño de interfaz, estructura de componentes, integración frontend/backend y definición de flujos para el portal.',
         impact:
-          'Fortalecimiento del criterio sobre riesgos web, control de acceso, headers, errores y validación.',
-        stack: ['OWASP ZAP', 'Docker', 'Juice Shop', 'HTTP', 'Security Headers', 'Testing manual'],
+          'Proyecto en desarrollo con potencial de mejorar el acceso digital del cliente y reducir fricción en procesos de consulta y autogestión.',
+        stack: ['Angular', 'TypeScript', 'TailwindCSS', 'Java', 'Spring Boot', 'JWT', 'Oracle'],
         highlights: [
-          'Baseline y full scan',
-          'Pruebas de control de acceso',
-          'Reporte con evidencias',
-          'Análisis OWASP Top 10',
+          'Portal orientado al cliente',
+          'Diseño responsive',
+          'Flujos de consulta',
+          'Integración con backend',
+          'Seguridad con JWT',
+          'Componentes reutilizables',
         ],
+        links: [],
+        images: [],
+      },
+      {
+        id: 'university-projects',
+        code: 'CASE-006',
+        title: 'Proyectos Universitarios',
+        category: 'Proyectos académicos',
+        status: 'academic',
+        problem:
+          'Durante la carrera se desarrollaron proyectos académicos para aplicar conceptos de programación, bases de datos, ingeniería de software, seguridad y documentación técnica.',
+        solution:
+          'Construcción de ejercicios, prototipos, informes y prácticas orientadas a reforzar habilidades técnicas y metodológicas.',
+        role: 'Desarrollo, análisis, documentación, pruebas y presentación de proyectos en el contexto universitario.',
+        impact:
+          'Fortalecimiento de bases técnicas, criterio de documentación y práctica en construcción de soluciones de software.',
+        stack: ['Java', 'Angular', 'SQL', 'Bases de datos', 'Documentación', 'OWASP ZAP'],
+        highlights: [
+          'Prototipos académicos',
+          'Prácticas de seguridad',
+          'Documentación técnica',
+          'Modelado de datos',
+          'Programación web',
+          'Informes universitarios',
+        ],
+        links: [],
+        images: [],
       },
       {
         id: 'portfolio-bryan-dev',
-        code: 'CASE-006',
+        code: 'CASE-007',
         title: 'Portafolio Interactivo Bryan Dev',
-        category: 'Producto técnico personal',
+        category: 'Proyecto personal profesional',
         status: 'portfolio',
         problem:
           'Un portafolio tradicional no comunicaba correctamente habilidad técnica, creatividad y experiencia real en proyectos.',
         solution:
-          'Diseño de una experiencia bilingüe interactiva con chat inicial, warnings, transición glitch, islas técnicas y módulos especializados.',
+          'Diseño de una experiencia bilingüe interactiva con chat inicial, warnings, transición glitch, islas técnicas, módulos especializados y easter egg.',
         role: 'Concepto de producto, diseño UI, implementación Angular, estilos con Tailwind, planificación de animaciones y documentación.',
         impact:
           'Presentación profesional memorable sin perder claridad técnica ni facilidad para reclutadores.',
@@ -227,8 +365,18 @@ export class ProjectVaultModuleComponent {
           'Intro cinematográfica',
           'Experience Mode',
           'Islas técnicas',
-          'Sistema Project Vault',
+          'Project Vault',
+          'Easter egg 16-bit',
+          'Diseño bilingüe',
         ],
+        links: [
+          {
+            label: 'Ver GitHub',
+            href: 'https://github.com/SafeBryan/portfolio-bryan-dev',
+            type: 'repo',
+          },
+        ],
+        images: [],
       },
     ];
   }
@@ -236,115 +384,210 @@ export class ProjectVaultModuleComponent {
   private getProjectsEn(): ProjectCase[] {
     return [
       {
-        id: 'uniandes-payments',
+        id: 'uniandes-payment-button',
         code: 'CASE-001',
-        title: 'Academic Payment System / Uniandes',
-        category: 'Enterprise payment flow',
+        title: 'UNIANDES Payment Button',
+        category: 'Deployed academic system',
         status: 'production',
         problem:
-          'Students needed a clearer and safer way to review debts, select documents and continue through the payment process.',
+          'Students needed a clear platform to review pending amounts, select payment concepts and continue the online academic transaction process.',
         solution:
-          'Built and improved frontend flows connected to backend services, with state handling, validation, debt grouping and payment method selection.',
-        role: 'Frontend development, API integration, UI state handling, visual improvements and flow validation.',
+          'Contributed to improving the payment portal by integrating debt consultation, document selection, validations, payment methods, confirmation and result views.',
+        role: 'Frontend development with Angular, backend service integration, payment state handling, visual validations, responsive improvements and payment gateway support.',
         impact:
-          'Improved clarity, reduced friction in the payment process and strengthened traceability of selected documents.',
-        stack: ['Angular', 'TypeScript', 'TailwindCSS', 'Java/Jakarta EE', 'Oracle', 'REST APIs'],
-        highlights: [
-          'Grouped debt visualization',
-          'Payment document selection',
-          'Responsive student dashboard',
-          'API-driven state handling',
+          'Improved student experience, clearer payment selection and support for a critical institutional process.',
+        stack: [
+          'Angular',
+          'TypeScript',
+          'TailwindCSS',
+          'Java/Jakarta EE',
+          'Oracle',
+          'REST APIs',
+          'Nuvei/Paymentez',
         ],
+        highlights: [
+          'Academic debt consultation',
+          'Payment document selection',
+          'Payment gateway integration',
+          'Transaction confirmation',
+          'Result screens',
+          'Flow validations',
+        ],
+        links: [
+          {
+            label: 'Open portal',
+            href: 'https://botonpagosuniandes.edu.ec/pagos',
+            type: 'live',
+          },
+        ],
+        images: [],
+      },
+      {
+        id: 'aseticket',
+        code: 'CASE-002',
+        title: 'AseTicket',
+        category: 'Deployed ticketing system',
+        status: 'production',
+        problem:
+          'Support management needed an organized way to register requests, track tickets, control states and assist users or clients.',
+        solution:
+          'Developed and improved features for ticket registration, consultation and tracking, with a clear interface for support operations.',
+        role: 'Full stack support in screens, service consumption, form validations, interface adjustments and user experience improvements.',
+        impact:
+          'Improved request traceability, support organization and visibility of ticket status.',
+        stack: [
+          'Angular',
+          'TypeScript',
+          'TailwindCSS',
+          'Java',
+          'Jakarta EE',
+          'Oracle',
+          'REST APIs',
+        ],
+        highlights: [
+          'Ticket registration',
+          'Request tracking',
+          'Process states',
+          'Operational interface',
+          'Form validations',
+          'Support traceability',
+        ],
+        links: [
+          {
+            label: 'Open system',
+            href: 'https://asecom.com.ec:9443/login',
+            type: 'live',
+          },
+        ],
+        images: [],
+      },
+      {
+        id: 'eeasa-pasantias',
+        code: 'CASE-003',
+        title: 'EEASA Internship System',
+        category: 'Institutional intranet system',
+        status: 'intranet',
+        problem:
+          'The internship process required monitoring and continuous improvements to keep a more organized flow of activities, validations and internal communication.',
+        solution:
+          'Monitored, reviewed and progressively improved the internship module, supporting flow adjustments, state validation, information organization and technical documentation.',
+        role: 'System monitoring, functionality review, improvement support, incident analysis, documentation and internal process tracking.',
+        impact:
+          'Improved control of the internship flow, better activity tracking and support for internal institutional processes.',
+        stack: ['Java', 'PL/SQL', 'Oracle', 'HTML/CSS', 'Institutional system', 'Intranet'],
+        highlights: [
+          'Activity monitoring',
+          'State tracking',
+          'Internal process validation',
+          'Improvements on existing module',
+          'Technical documentation',
+          'Institutional flow support',
+        ],
+        links: [],
+        images: [
+          {
+            src: '/images/projects/eeasa-pasantias-01.png',
+            alt: 'Screenshot of the EEASA internship system',
+          },
+          {
+            src: '/images/projects/eeasa-pasantias-02.png',
+            alt: 'Internal view of the EEASA internship module',
+          },
+        ],
+      },
+      {
+        id: 'asefin-internal-system',
+        code: 'CASE-004',
+        title: 'ASEFIN Internal Financial System',
+        category: 'Internal financial system in development',
+        status: 'development',
+        problem:
+          'The cooperative requires improvements and modernization of internal modules related to financial processes, client administration and internal operations.',
+        solution:
+          'Progressive development of internal features with Angular, Java and Oracle, prioritizing clear structure, maintainable screens and integration with existing services.',
+        role: 'Full stack support in screen development, endpoint consumption, validations, Java services, Oracle queries and technical documentation.',
+        impact:
+          'Progressive improvement of maintainability, traceability and visual consistency within internal financial modules.',
+        stack: [
+          'Angular',
+          'TypeScript',
+          'TailwindCSS',
+          'Java',
+          'Spring Boot',
+          'Oracle',
+          'REST APIs',
+        ],
+        highlights: [
+          'Internal modules',
+          'Administrative screens',
+          'Service consumption',
+          'Data validations',
+          'Oracle queries',
+          'Enterprise design',
+        ],
+        links: [],
+        images: [],
       },
       {
         id: 'asefin-client-portal',
-        code: 'CASE-002',
-        title: 'Financial Client Portal / ASEFIN',
-        category: 'Financial web system',
-        status: 'production',
-        problem:
-          'Financial modules required cleaner client management, structured data screens and maintainable frontend/backend integration.',
-        solution:
-          'Implemented client views, forms, detail screens and service integrations following a business-oriented structure.',
-        role: 'Full stack support with Angular screens, Java services, Oracle data access and technical documentation.',
-        impact:
-          'Improved maintainability, user clarity and consistency across financial administration modules.',
-        stack: ['Angular', 'Java', 'Spring Boot', 'Oracle', 'JWT', 'REST APIs'],
-        highlights: [
-          'Client detail module',
-          'Structured forms',
-          'Reusable UI sections',
-          'Backend integration',
-        ],
-      },
-      {
-        id: 'client-relations-documents',
-        code: 'CASE-003',
-        title: 'Clients, Relations and Documents',
-        category: 'Business process module',
-        status: 'internal',
-        problem:
-          'Client relationships and document handling needed to be separated from legacy structures and represented in a cleaner workflow.',
-        solution:
-          'Worked on screens and service logic for relationships, guarantees and digitalized documents using validated business flows.',
-        role: 'Frontend implementation, backend endpoint consumption, payload alignment and UI consistency.',
-        impact:
-          'Better separation of responsibilities, clearer process management and improved data traceability.',
-        stack: ['Angular', 'TypeScript', 'TailwindCSS', 'Java', 'Oracle', 'JDBC'],
-        highlights: [
-          'Relationship creation flow',
-          'Document management UI',
-          'Validation feedback',
-          'Consistent enterprise design',
-        ],
-      },
-      {
-        id: 'payment-orders-dashboard',
-        code: 'CASE-004',
-        title: 'Payment Orders Dashboard',
-        category: 'Dashboard and analytics',
-        status: 'internal',
-        problem:
-          'Payment orders required a compact dashboard with KPIs, status summaries, monthly income and recent records.',
-        solution:
-          'Designed dashboard sections with charts, filters, responsive tables and compact visual cards.',
-        role: 'Frontend architecture, dashboard UI, service consumption and responsive layout design.',
-        impact:
-          'Improved visibility of payment order status, financial summaries and recent activity.',
-        stack: ['Angular', 'Signals', 'ng2-charts', 'TypeScript', 'TailwindCSS', 'REST APIs'],
-        highlights: ['KPI cards', 'Charts and summaries', 'Recent orders table', 'Date filters'],
-      },
-      {
-        id: 'owasp-zap-audit',
         code: 'CASE-005',
-        title: 'OWASP ZAP Security Audit',
-        category: 'Security practice',
-        status: 'security',
+        title: 'ASEFIN Client Portal',
+        category: 'Client portal in development',
+        status: 'development',
         problem:
-          'A vulnerable web application needed to be analyzed using DAST, manual testing and OWASP-based reasoning.',
+          'Clients need a clearer portal to consult information, access digital services and complete guided operations.',
         solution:
-          'Executed ZAP scans, reviewed alerts, validated access control behavior and documented findings with evidence.',
-        role: 'Security testing, evidence collection, analysis of findings and remediation-oriented documentation.',
+          'Ongoing development of a client-oriented portal focused on user experience, security, information consultation and integration with financial services.',
+        role: 'Support in UI design, component structure, frontend/backend integration and flow definition for the portal.',
         impact:
-          'Strengthened understanding of web security risks, access control, headers, errors and validation.',
-        stack: ['OWASP ZAP', 'Docker', 'Juice Shop', 'HTTP', 'Security Headers', 'Manual Testing'],
+          'Ongoing project with potential to improve client digital access and reduce friction in consultation and self-service processes.',
+        stack: ['Angular', 'TypeScript', 'TailwindCSS', 'Java', 'Spring Boot', 'JWT', 'Oracle'],
         highlights: [
-          'Baseline and full scan',
-          'Access control testing',
-          'Evidence-based report',
-          'OWASP Top 10 reasoning',
+          'Client-oriented portal',
+          'Responsive design',
+          'Consultation flows',
+          'Backend integration',
+          'JWT security',
+          'Reusable components',
         ],
+        links: [],
+        images: [],
+      },
+      {
+        id: 'university-projects',
+        code: 'CASE-006',
+        title: 'University Projects',
+        category: 'Academic projects',
+        status: 'academic',
+        problem:
+          'During my degree, academic projects were developed to apply concepts of programming, databases, software engineering, security and technical documentation.',
+        solution:
+          'Built exercises, prototypes, reports and practices focused on strengthening technical and methodological skills.',
+        role: 'Development, analysis, documentation, testing and presentation of projects in the university context.',
+        impact:
+          'Strengthened technical foundations, documentation criteria and practice in building software solutions.',
+        stack: ['Java', 'Angular', 'SQL', 'Databases', 'Documentation', 'OWASP ZAP'],
+        highlights: [
+          'Academic prototypes',
+          'Security practices',
+          'Technical documentation',
+          'Data modeling',
+          'Web programming',
+          'University reports',
+        ],
+        links: [],
+        images: [],
       },
       {
         id: 'portfolio-bryan-dev',
-        code: 'CASE-006',
+        code: 'CASE-007',
         title: 'Interactive Portfolio Bryan Dev',
-        category: 'Personal technical product',
+        category: 'Personal professional project',
         status: 'portfolio',
         problem:
           'A traditional portfolio would not properly communicate technical skill, creativity and real project experience.',
         solution:
-          'Designed an interactive bilingual experience with chat intro, warning sequence, glitch transition, technical islands and specialized modules.',
+          'Designed an interactive bilingual experience with chat intro, warning sequence, glitch transition, technical islands, specialized modules and an easter egg.',
         role: 'Product concept, UI design, Angular implementation, Tailwind styling, animation planning and documentation.',
         impact:
           'Creates a memorable professional presentation while keeping the content clear, technical and recruiter-friendly.',
@@ -353,8 +596,18 @@ export class ProjectVaultModuleComponent {
           'Cinematic intro',
           'Experience Mode',
           'Technical islands',
-          'Project Vault system',
+          'Project Vault',
+          '16-bit easter egg',
+          'Bilingual design',
         ],
+        links: [
+          {
+            label: 'View GitHub',
+            href: 'https://github.com/SafeBryan/portfolio-bryan-dev',
+            type: 'repo',
+          },
+        ],
+        images: [],
       },
     ];
   }
